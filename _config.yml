@@ -6,10 +6,10 @@
 title: Princeling66'Blog
 subtitle: 这不是BUG 这是feature
 description: Princeling66的博客
-keywords:
+keywords: JAVA
 author: wangPei
-language: en
-timezone: Asia/Hangzhou
+language: zh-CN
+timezone: Asia/Shanghai
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
