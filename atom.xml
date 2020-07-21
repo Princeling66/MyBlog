@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
-  <title>Hexo</title>
+  <title>Princeling66&#39;Blog</title>
   
+  <subtitle>这不是BUG 这是feature</subtitle>
+  <link href="/MyBlog/atom.xml" rel="self"/>
   
-  <link href="/atom.xml" rel="self"/>
-  
-  <link href="http://yoursite.com/"/>
+  <link href="https://Princeling66.github.io/MyBlog/"/>
   <updated>2020-07-19T12:08:50.033Z</updated>
-  <id>http://yoursite.com/</id>
+  <id>https://Princeling66.github.io/MyBlog/</id>
   
   <author>
-    <name>John Doe</name>
+    <name>wangPei</name>
     
   </author>
   
@@ -18,8 +18,8 @@
   
   <entry>
     <title>Hello World</title>
-    <link href="http://yoursite.com/2020/07/19/hello-world/"/>
-    <id>http://yoursite.com/2020/07/19/hello-world/</id>
+    <link href="https://Princeling66.github.io/MyBlog/2020/07/19/hello-world/"/>
+    <id>https://Princeling66.github.io/MyBlog/2020/07/19/hello-world/</id>
     <published>2020-07-19T12:08:50.032Z</published>
     <updated>2020-07-19T12:08:50.033Z</updated>
     

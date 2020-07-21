@@ -2,7 +2,28 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://yoursite.com/2020/07/19/hello-world/</loc>
+    <loc>https://princeling66.github.io/MyBlog/link/index.html</loc>
+    
+    <lastmod>2020-07-20T08:42:47.337Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://princeling66.github.io/MyBlog/categories/index.html</loc>
+    
+    <lastmod>2020-07-20T08:41:25.448Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://princeling66.github.io/MyBlog/tags/index.html</loc>
+    
+    <lastmod>2020-07-20T08:40:04.721Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>https://princeling66.github.io/MyBlog/2020/07/19/hello-world/</loc>
     
     <lastmod>2020-07-19T12:08:50.033Z</lastmod>
     
