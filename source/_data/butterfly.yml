@@ -12,8 +12,8 @@ menu:
   标签: /tags/ || fas fa-tags
   分类: /categories/ || fas fa-folder-open
   清单||fas fa-list:
-    - Music || /music/ || fas fa-music
-    - Movie || /movies/ || fas fa-video
+    - 音乐 || /music/ || fas fa-music
+    - 电源 || /movies/ || fas fa-video
   友链: /link/ || fas fa-link
   关于: /about/ || fas fa-heart
 
@@ -83,29 +83,29 @@ katex:
 # --------------------------------------
 
 # Favicon（網站圖標）
-favicon: /img/favicon.png
+favicon: /photo/WechatIMG1003.jpeg
 
 # Avatar (頭像)
 avatar:
-  img: /img/WechatIMG1003.jpeg
+  img: /photo/WechatIMG1003.jpeg
   effect: false
 
 # the banner image of home page
-index_img: /img/WechatIMG40675.jpeg
+index_img: /photo/WechatIMG40675.jpeg
 
 # if the banner of page not setting,it will show the top_img
-default_top_img: https://i.loli.net/2020/05/01/IuWi8QbHvzjlOPw.jpg
-
+default_top_img: /photo/WechatIMG40675.jpeg
+#https://i.loli.net/2020/05/01/IuWi8QbHvzjlOPw.jpg
 # the banner image of archive page
-archive_img: /img/WechatIMG40675.jpeg
+archive_img: /photo/WechatIMG40675.jpeg
 
 # the banner image of tag page
 # tag page, look like https://xxxxxxxxx.com/tags/butterfly
-tag_img: /img/WechatIMG40675.jpeg
+tag_img: /photo/WechatIMG40675.jpeg
 
 # the banner image of category page
 # category page, look like https://xxxxxxxxx.com/categories/butterfly
-category_img: /img/WechatIMG40675.jpeg
+category_img: /photo/WechatIMG40675.jpeg
 
 # If you are using hexo-douban, you can configure it (如果你有使用 hexo-douban,可配置這個)
 # douban:
@@ -355,7 +355,8 @@ gitter:
 
 since: 2020
 
-footer_custom_text:
+footer_custom_text: Hi, welcome to my <a href="https://princeling66.github.io/MyBlog/">blog</a>!
+
 
 footer_copyright: true
 

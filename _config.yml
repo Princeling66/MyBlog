@@ -98,5 +98,6 @@ theme: butterfly
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
-  type: ''
-  branch: master
+  type: 'git'
+  ## repo: https://github.com/Princeling66/MyBlog.git
+  branch: gh-pages
