@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>JReble破解</title>
+      <link href="/MyBlog/2020/12/16/JReble%E7%A0%B4%E8%A7%A3/"/>
+      <url>/MyBlog/2020/12/16/JReble%E7%A0%B4%E8%A7%A3/</url>
+      
+        <content type="html"><![CDATA[<h4 id="生成-GUID-的网址"><a href="#生成-GUID-的网址" class="headerlink" title="生成 GUID 的网址"></a>生成 GUID 的网址</h4><p><a href="https://www.guidgen.com/" target="_blank" rel="noopener">https://www.guidgen.com/</a></p><h4 id="用这个网址-生成的-GUID-激活"><a href="#用这个网址-生成的-GUID-激活" class="headerlink" title="用这个网址 + 生成的 GUID 激活"></a>用这个网址 + 生成的 GUID 激活</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https:&#x2F;&#x2F;jrebel.qekang.com&#x2F;</span><br></pre></td></tr></table></figure><h4 id="如"><a href="#如" class="headerlink" title="如:"></a>如:</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https:&#x2F;&#x2F;jrebel.qekang.com&#x2F;2df0fa47-95ba-4dec-911b-4209a64b32d4</span><br></pre></td></tr></table></figure><h4 id="粘贴到Team-URL-第一个框中"><a href="#粘贴到Team-URL-第一个框中" class="headerlink" title="粘贴到Team URL 第一个框中"></a>粘贴到Team URL 第一个框中</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IntelliJ IDEA --&gt;Preferences --&gt;JReble --&gt; Change License</span><br></pre></td></tr></table></figure><h4 id="设置离线模式-来防止失效"><a href="#设置离线模式-来防止失效" class="headerlink" title="设置离线模式 来防止失效"></a>设置离线模式 来防止失效</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IntelliJ IDEA --&gt;Preferences --&gt;JReble --&gt; Work offline</span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> 工具 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> JReble </tag>
+            
+            <tag> 破解 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Hello World</title>
       <link href="/MyBlog/2020/07/19/hello-world/"/>
       <url>/MyBlog/2020/07/19/hello-world/</url>
