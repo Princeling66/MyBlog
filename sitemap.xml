@@ -2,38 +2,70 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>https://princeling66.github.io/MyBlog/2020/12/16/JReble%25E7%25A0%25B4%25E8%25A7%25A3/</loc>
+    <loc>https://princeling66.github.io/MyBlog/2020/12/16/JReble%E7%A0%B4%E8%A7%A3/</loc>
     
-    <lastmod>2020-12-16T10:31:14.798Z</lastmod>
+    <lastmod>2020-12-16</lastmod>
     
   </url>
   
   <url>
     <loc>https://princeling66.github.io/MyBlog/categories/index.html</loc>
     
-    <lastmod>2020-07-22T01:10:31.755Z</lastmod>
+    <lastmod>2020-07-22</lastmod>
     
   </url>
   
   <url>
     <loc>https://princeling66.github.io/MyBlog/tags/index.html</loc>
     
-    <lastmod>2020-07-22T01:10:31.755Z</lastmod>
+    <lastmod>2020-07-22</lastmod>
     
   </url>
   
   <url>
     <loc>https://princeling66.github.io/MyBlog/link/index.html</loc>
     
-    <lastmod>2020-07-21T15:50:14.646Z</lastmod>
+    <lastmod>2020-07-21</lastmod>
     
   </url>
   
   <url>
     <loc>https://princeling66.github.io/MyBlog/2020/07/19/hello-world/</loc>
     
-    <lastmod>2020-07-19T12:08:50.033Z</lastmod>
+    <lastmod>2020-07-19</lastmod>
     
+  </url>
+  
+
+  <url>
+    <loc>https://princeling66.github.io/MyBlog</loc>
+    <lastmod>2020-12-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+
+  
+  <url>
+    <loc>https://princeling66.github.io/MyBlog/tags/JReble/</loc>
+    <lastmod>2020-12-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://princeling66.github.io/MyBlog/tags/%E7%A0%B4%E8%A7%A3/</loc>
+    <lastmod>2020-12-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+
+  
+  <url>
+    <loc>https://princeling66.github.io/MyBlog/categories/%E5%B7%A5%E5%85%B7/</loc>
+    <lastmod>2020-12-17</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
   </url>
   
 </urlset>
