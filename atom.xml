@@ -6,7 +6,7 @@
   <link href="https://princeling66.github.io/MyBlog/atom.xml" rel="self"/>
   
   <link href="https://princeling66.github.io/MyBlog/"/>
-  <updated>2020-12-17T06:52:16.561Z</updated>
+  <updated>2020-12-29T09:13:33.779Z</updated>
   <id>https://princeling66.github.io/MyBlog/</id>
   
   <author>
@@ -15,6 +15,32 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>SQL 编写规范</title>
+    <link href="https://princeling66.github.io/MyBlog/2020/12/29/SQL%20%E7%BC%96%E5%86%99%E8%A7%84%E8%8C%83/"/>
+    <id>https://princeling66.github.io/MyBlog/2020/12/29/SQL%20%E7%BC%96%E5%86%99%E8%A7%84%E8%8C%83/</id>
+    <published>2020-12-29T10:00:16.000Z</published>
+    <updated>2020-12-29T09:13:33.779Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="SQL-编写规范"><a href="#SQL-编写规范" class="headerlink" title="SQL 编写规范"></a>SQL 编写规范</h4><h6 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h6><ol><li><p>UPDATE、DELETE 操作不使用 LIMIT，必须走 WHERE 精准匹配，LIMIT 是随机的，此类操作会导致数据出错。</p></li><li><p>禁止使用INSERT INTO t_xxx VALUES(xxx)，必须显式指定插入的列属性，避免表结构变动导致数据出错。</p></li><li><p>SQL 语句中最常见的导致索引失效的情况需注意：隐式类型转换，如索引 a 的类型是 varchar，SQL 语句写成 where a = 1; varchar 变成了int。</p></li><li><p>对索引列进行数学计算和函数等操作，例如，使用函数对日期列进行格式化处理。<br>join 列字符集不统一。</p></li><li><p>多列排序顺序不一致问题，如索引是 (a,b)，SQL 语句是 order by a b desclike。<br>模糊查询使用的时候对于字符型xxx%形式可以走到一些索引，其他情况都走不到索引。</p></li><li><p>使用了负方向查询（not，!=，not in 等）。==</p></li></ol><h6 id="建议事项"><a href="#建议事项" class="headerlink" title="建议事项"></a>建议事项</h6><ol><li>按需索取，拒绝select *，规避以下问题：无法索引覆盖，回表操作，增加 I/O。<br>额外的内存负担，大量冷数据灌入innodb_buffer_pool_size，降低查询命中率。<br>额外的网络传输开销。</li><li>尽量避免使用大事务，建议大事务拆小事务，规避主从延迟。<br>业务代码中事务及时提交，避免产生没必要的锁等待。</li><li>少用多表 join，大表禁止 join，两张表 join 必须让小表做驱动表，join 列必须字符集一致并且都建有索引。</li><li>LIMIT 分页优化，LIMIT 80000，10这种操作是取出80010条记录，再返回后10条，数据库压力很大，推荐先确认首记录的位置再分页，例如SELECT * FROM test WHERE id = ( SELECT sql_no_cache id FROM test order by id LIMIT 80000,1 ) LIMIT 10 ;。</li><li>避免多层子查询嵌套的 SQL 语句，MySQL 5.5 之前的查询优化器会把 in 改成 exists，会导致索引失效，若外表很大则性能会很差。</li></ol>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h4 id=&quot;SQL-编写规范&quot;&gt;&lt;a href=&quot;#SQL-编写规范&quot; class=&quot;headerlink&quot; title=&quot;SQL 编写规范&quot;&gt;&lt;/a&gt;SQL 编写规范&lt;/h4&gt;&lt;h6 id=&quot;注意事项&quot;&gt;&lt;a href=&quot;#注意事项&quot; class=&quot;headerlink&quot; </summary>
+      
+    
+    
+    
+    <category term="数据库" scheme="https://princeling66.github.io/MyBlog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/"/>
+    
+    
+    <category term="Mysql" scheme="https://princeling66.github.io/MyBlog/tags/Mysql/"/>
+    
+    <category term="SQL" scheme="https://princeling66.github.io/MyBlog/tags/SQL/"/>
+    
+  </entry>
   
   <entry>
     <title>JReble破解</title>

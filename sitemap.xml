@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://princeling66.github.io/MyBlog/2020/12/29/SQL%20%E7%BC%96%E5%86%99%E8%A7%84%E8%8C%83/</loc>
+    
+    <lastmod>2020-12-29</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>https://princeling66.github.io/MyBlog/2020/12/16/JReble%E7%A0%B4%E8%A7%A3/</loc>
     
     <lastmod>2020-12-17</lastmod>
@@ -46,7 +53,7 @@
 
   <url>
     <loc>https://princeling66.github.io/MyBlog</loc>
-    <lastmod>2020-12-17</lastmod>
+    <lastmod>2020-12-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
@@ -54,14 +61,28 @@
   
   <url>
     <loc>https://princeling66.github.io/MyBlog/tags/JReble/</loc>
-    <lastmod>2020-12-17</lastmod>
+    <lastmod>2020-12-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
     <loc>https://princeling66.github.io/MyBlog/tags/%E7%A0%B4%E8%A7%A3/</loc>
-    <lastmod>2020-12-17</lastmod>
+    <lastmod>2020-12-29</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://princeling66.github.io/MyBlog/tags/Mysql/</loc>
+    <lastmod>2020-12-29</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://princeling66.github.io/MyBlog/tags/SQL/</loc>
+    <lastmod>2020-12-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
@@ -70,7 +91,14 @@
   
   <url>
     <loc>https://princeling66.github.io/MyBlog/categories/%E5%B7%A5%E5%85%B7/</loc>
-    <lastmod>2020-12-17</lastmod>
+    <lastmod>2020-12-29</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://princeling66.github.io/MyBlog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
+    <lastmod>2020-12-29</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
