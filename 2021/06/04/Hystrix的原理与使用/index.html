@@ -1,0 +1,212 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>防雪崩利器：熔断器 Hystrix 的原理与使用【转载】 | Princeling66'Blog</title><meta name="description" content="防雪崩利器：熔断器 Hystrix 的原理与使用【转载】前言分布式系统中经常会出现某个基础服务不可用造成整个系统不可用的情况, 这种现象被称为服务雪崩效应. 为了应对服务雪崩, 一种常见的做法是手动服务降级. 而Hystrix的出现,给我们提供了另一种选择. 服务雪崩效应的定义服务雪崩效应是一种因 服务提供者 的不可用导致 服务调用者 的不可用,并将不可用 逐渐放大 的过程.如果所示:  上图中,"><meta name="keywords" content="微服务"><meta name="author" content="wangPei"><meta name="copyright" content="wangPei"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/MyBlog/photo/WechatIMG1003.jpeg"><link rel="canonical" href="https://princeling66.github.io/MyBlog/2021/06/04/Hystrix%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BD%BF%E7%94%A8/"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin="crossorigin"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="preconnect" href="//zz.bdstatic.com"/><meta property="og:type" content="article"><meta property="og:title" content="防雪崩利器：熔断器 Hystrix 的原理与使用【转载】"><meta property="og:url" content="https://princeling66.github.io/MyBlog/2021/06/04/Hystrix%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BD%BF%E7%94%A8/"><meta property="og:site_name" content="Princeling66'Blog"><meta property="og:description" content="防雪崩利器：熔断器 Hystrix 的原理与使用【转载】前言分布式系统中经常会出现某个基础服务不可用造成整个系统不可用的情况, 这种现象被称为服务雪崩效应. 为了应对服务雪崩, 一种常见的做法是手动服务降级. 而Hystrix的出现,给我们提供了另一种选择. 服务雪崩效应的定义服务雪崩效应是一种因 服务提供者 的不可用导致 服务调用者 的不可用,并将不可用 逐渐放大 的过程.如果所示:  上图中,"><meta property="og:image" content="https://princeling66.github.io/MyBlog/photo/Hystrix.jpeg"><meta property="article:published_time" content="2021-06-04T10:00:16.000Z"><meta property="article:modified_time" content="2021-06-04T09:14:21.346Z"><meta name="twitter:card" content="summary"><script>var activateDarkMode = function () {
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#000')
+  }
+}
+var activateLightMode = function () {
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#fff')
+  }
+}
+
+var getCookies = function (name) {
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop().split(';').shift()
+}
+
+var autoChangeMode = 'false'
+var t = getCookies('theme')
+if (autoChangeMode === '1') {
+  var isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+  var isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+  var isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined) {
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport) {
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour <= 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+      if (Cookies.get('theme') === undefined) {
+        e.matches ? activateDarkMode() : activateLightMode()
+      }
+    })
+  } else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else if (autoChangeMode === '2') {
+  now = new Date()
+  hour = now.getHours()
+  isNight = hour <= 6 || hour >= 18
+  if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else {
+  if (t === 'dark') activateDarkMode()
+  else if (t === 'light') activateLightMode()
+}</script><link rel="stylesheet" href="/MyBlog/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="next" title="大厂面试必备之消息队列连环问【转载】" href="https://princeling66.github.io/MyBlog/2021/03/27/%E5%A4%A7%E5%8E%82%E9%9D%A2%E8%AF%95%E5%BF%85%E5%A4%87%E4%B9%8B%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E8%BF%9E%E7%8E%AF%E9%97%AE%E3%80%90%E8%BD%AC%E8%BD%BD%E3%80%91/"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap"><script>var GLOBAL_CONFIG = { 
+  root: '/MyBlog/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: true,
+  copyright: undefined,
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: undefined,
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  baiduPush: true,
+  highlightCopy: true,
+  highlightLang: true,
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false    
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: true
+  }</script><noscript><style>
+#nav {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><link rel="stylesheet" href="//at.alicdn.com/t/font_1955558_ba3hjnb84y6.css"><meta name="generator" content="Hexo 5.2.0"><link rel="alternate" href="/MyBlog/atom.xml" title="Princeling66'Blog" type="application/atom+xml">
+</head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/MyBlog/photo/WechatIMG1003.jpeg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/MyBlog/archives/"><div class="headline">文章</div><div class="length_num">6</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/MyBlog/tags/"><div class="headline">标签</div><div class="length_num">8</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/MyBlog/categories/"><div class="headline">分类</div><div class="length_num">6</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/MyBlog/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/MyBlog/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/MyBlog/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/MyBlog/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down menus-expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/MyBlog/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page" href="/MyBlog/movies/"><i class="fa-fw fas fa-video"></i><span> 电源</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/MyBlog/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/MyBlog/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><i class="fas fa-arrow-right on" id="toggle-sidebar"></i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%98%B2%E9%9B%AA%E5%B4%A9%E5%88%A9%E5%99%A8%EF%BC%9A%E7%86%94%E6%96%AD%E5%99%A8-Hystrix-%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BD%BF%E7%94%A8%E3%80%90%E8%BD%AC%E8%BD%BD%E3%80%91"><span class="toc-number">1.</span> <span class="toc-text">防雪崩利器：熔断器 Hystrix 的原理与使用【转载】</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">2.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E9%9B%AA%E5%B4%A9%E6%95%88%E5%BA%94%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="toc-number">3.</span> <span class="toc-text">服务雪崩效应的定义</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E9%9B%AA%E5%B4%A9%E6%95%88%E5%BA%94%E5%BD%A2%E6%88%90%E7%9A%84%E5%8E%9F%E5%9B%A0"><span class="toc-number">4.</span> <span class="toc-text">服务雪崩效应形成的原因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E9%9B%AA%E5%B4%A9%E7%9A%84%E5%BA%94%E5%AF%B9%E7%AD%96%E7%95%A5"><span class="toc-number">5.</span> <span class="toc-text">服务雪崩的应对策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8Hystrix%E9%A2%84%E9%98%B2%E6%9C%8D%E5%8A%A1%E9%9B%AA%E5%B4%A9"><span class="toc-number">6.</span> <span class="toc-text">使用Hystrix预防服务雪崩</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B5%84%E6%BA%90%E9%9A%94%E7%A6%BB"><span class="toc-number">6.0.1.</span> <span class="toc-text">资源隔离</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%86%94%E6%96%AD%E5%99%A8%E6%A8%A1%E5%BC%8F"><span class="toc-number">6.0.2.</span> <span class="toc-text">熔断器模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%91%BD%E4%BB%A4%E6%A8%A1%E5%BC%8F"><span class="toc-number">6.0.3.</span> <span class="toc-text">命令模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Hystrix%E7%9A%84%E5%86%85%E9%83%A8%E5%A4%84%E7%90%86%E9%80%BB%E8%BE%91"><span class="toc-number">6.0.4.</span> <span class="toc-text">Hystrix的内部处理逻辑</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Hystrix-Metrics%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">7.</span> <span class="toc-text">Hystrix Metrics的实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-4%E4%B9%8B%E5%89%8D%E7%9A%84%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E5%AE%9E%E7%8E%B0"><span class="toc-number">7.0.1.</span> <span class="toc-text">1.4之前的滑动窗口实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-5%E4%B9%8B%E5%90%8E%E7%9A%84%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E5%AE%9E%E7%8E%B0"><span class="toc-number">7.0.2.</span> <span class="toc-text">1.5之后的滑动窗口实现</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">8.</span> <span class="toc-text">总结</span></a></li></ol></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/MyBlog/photo/Hystrix.jpeg)"><nav id="nav"><span class="pull-left" id="blog_name"><a class="blog_title" id="site-name" href="/MyBlog/">Princeling66'Blog</a></span><span class="pull-right menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/MyBlog/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/MyBlog/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/MyBlog/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/MyBlog/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down menus-expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/MyBlog/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page" href="/MyBlog/movies/"><i class="fa-fw fas fa-video"></i><span> 电源</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/MyBlog/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/MyBlog/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">防雪崩利器：熔断器 Hystrix 的原理与使用【转载】</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="发表于 2021-06-04 18:00:16"><i class="far fa-calendar-alt fa-fw"></i> 发表于 2021-06-04</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="更新于 2021-06-04 17:14:21"><i class="fas fa-history fa-fw"></i> 更新于 2021-06-04</span></time><span class="post-meta__categories"><span class="post-meta__separator">|</span><i class="fas fa-inbox fa-fw post-meta__icon"></i><a class="post-meta__categories" href="/MyBlog/categories/Hystrix/">Hystrix</a></span></div><div class="meta-secondline"> </div><div class="meta-thirdline"><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta__icon"></i><span>阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><h2 id="防雪崩利器：熔断器-Hystrix-的原理与使用【转载】"><a href="#防雪崩利器：熔断器-Hystrix-的原理与使用【转载】" class="headerlink" title="防雪崩利器：熔断器 Hystrix 的原理与使用【转载】"></a>防雪崩利器：熔断器 Hystrix 的原理与使用【转载】</h2><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>分布式系统中经常会出现某个基础服务不可用造成整个系统不可用的情况, 这种现象被称为服务雪崩效应. 为了应对服务雪崩, 一种常见的做法是手动服务降级. 而Hystrix的出现,给我们提供了另一种选择.</p>
+<h2 id="服务雪崩效应的定义"><a href="#服务雪崩效应的定义" class="headerlink" title="服务雪崩效应的定义"></a>服务雪崩效应的定义</h2><p>服务雪崩效应是一种因 <strong>服务提供者</strong> 的不可用导致 <strong>服务调用者</strong> 的不可用,并将不可用 <strong>逐渐放大</strong> 的过程.如果所示:</p>
+<p><img src= "/MyBlog/img/loading.gif" data-src="https://segmentfault.com/img/bVziad" alt="图片描述"></p>
+<p>上图中, A为服务提供者, B为A的服务调用者, C和D是B的服务调用者. 当A的不可用,引起B的不可用,并将不可用逐渐放大C和D时, 服务雪崩就形成了.</p>
+<h2 id="服务雪崩效应形成的原因"><a href="#服务雪崩效应形成的原因" class="headerlink" title="服务雪崩效应形成的原因"></a>服务雪崩效应形成的原因</h2><p>我把服务雪崩的参与者简化为 <strong>服务提供者</strong> 和 <strong>服务调用者</strong>, 并将服务雪崩产生的过程分为以下三个阶段来分析形成的原因:</p>
+<ul>
+<li>服务提供者不可用</li>
+<li>重试加大流量</li>
+<li>服务调用者不可用</li>
+</ul>
+<p><img src= "/MyBlog/img/loading.gif" data-src="https://segmentfault.com/img/bVzh91" alt="图片描述"></p>
+<p>服务雪崩的每个阶段都可能由不同的原因造成, 比如造成 <strong>服务不可用</strong> 的原因有:</p>
+<ul>
+<li>硬件故障</li>
+<li>程序Bug</li>
+<li>缓存击穿</li>
+<li>用户大量请求</li>
+</ul>
+<p>硬件故障可能为硬件损坏造成的服务器主机宕机, 网络硬件故障造成的服务提供者的不可访问.<br>缓存击穿一般发生在缓存应用重启, 所有缓存被清空时,以及短时间内大量缓存失效时. 大量的缓存不命中, 使请求直击后端,造成服务提供者超负荷运行,引起服务不可用.<br>在秒杀和大促开始前,如果准备不充分,用户发起大量请求也会造成服务提供者的不可用.</p>
+<p>而形成 <strong>重试加大流量</strong> 的原因有:</p>
+<ul>
+<li>用户重试</li>
+<li>代码逻辑重试</li>
+</ul>
+<p>在服务提供者不可用后, 用户由于忍受不了界面上长时间的等待,而不断刷新页面甚至提交表单.<br>服务调用端的会存在大量服务异常后的重试逻辑.<br>这些重试都会进一步加大请求流量.</p>
+<p>最后, <strong>服务调用者不可用</strong> 产生的主要原因是:</p>
+<ul>
+<li>同步等待造成的资源耗尽</li>
+</ul>
+<p>当服务调用者使用 <strong>同步调用</strong> 时, 会产生大量的等待线程占用系统资源. 一旦线程资源被耗尽,服务调用者提供的服务也将处于不可用状态, 于是服务雪崩效应产生了.</p>
+<h2 id="服务雪崩的应对策略"><a href="#服务雪崩的应对策略" class="headerlink" title="服务雪崩的应对策略"></a>服务雪崩的应对策略</h2><p>针对造成服务雪崩的不同原因, 可以使用不同的应对策略:</p>
+<ol>
+<li>流量控制</li>
+<li>改进缓存模式</li>
+<li>服务自动扩容</li>
+<li>服务调用者降级服务</li>
+</ol>
+<p><strong>流量控制</strong> 的具体措施包括:</p>
+<ul>
+<li>网关限流</li>
+<li>用户交互限流</li>
+<li>关闭重试</li>
+</ul>
+<p>因为Nginx的高性能, 目前一线互联网公司大量采用Nginx+Lua的网关进行流量控制, 由此而来的OpenResty也越来越热门.</p>
+<p>用户交互限流的具体措施有: 1. 采用加载动画,提高用户的忍耐等待时间. 2. 提交按钮添加强制等待时间机制.</p>
+<p><strong>改进缓存模式</strong> 的措施包括:</p>
+<ul>
+<li>缓存预加载</li>
+<li>同步改为异步刷新</li>
+</ul>
+<p><strong>服务自动扩容</strong> 的措施主要有:</p>
+<ul>
+<li>AWS的auto scaling</li>
+</ul>
+<p><strong>服务调用者降级服务</strong> 的措施包括:</p>
+<ul>
+<li>资源隔离</li>
+<li>对依赖服务进行分类</li>
+<li>不可用服务的调用快速失败</li>
+</ul>
+<p>资源隔离主要是对调用服务的线程池进行隔离.</p>
+<p>我们根据具体业务,将依赖服务分为: 强依赖和若依赖. 强依赖服务不可用会导致当前业务中止,而弱依赖服务的不可用不会导致当前业务的中止.</p>
+<p>不可用服务的调用快速失败一般通过 <strong>超时机制</strong>, <strong>熔断器</strong> 和熔断后的 <strong>降级方法</strong> 来实现.</p>
+<h2 id="使用Hystrix预防服务雪崩"><a href="#使用Hystrix预防服务雪崩" class="headerlink" title="使用Hystrix预防服务雪崩"></a>使用Hystrix预防服务雪崩</h2><p><strong>Hystrix</strong> [hɪst’rɪks]的中文含义是豪猪, 因其背上长满了刺,而拥有自我保护能力. Netflix的 <strong>Hystrix</strong> 是一个帮助解决分布式系统交互时超时处理和容错的类库, 它同样拥有保护系统的能力.</p>
+<p>Hystrix的设计原则包括:</p>
+<ul>
+<li>资源隔离</li>
+<li>熔断器</li>
+<li>命令模式</li>
+</ul>
+<h4 id="资源隔离"><a href="#资源隔离" class="headerlink" title="资源隔离"></a>资源隔离</h4><p>货船为了进行防止漏水和火灾的扩散,会将货仓分隔为多个, 如下图所示:</p>
+<p><img src= "/MyBlog/img/loading.gif" data-src="https://segmentfault.com/img/bVzgLJ" alt="图片描述"></p>
+<p>这种资源隔离减少风险的方式被称为:Bulkheads(舱壁隔离模式).<br>Hystrix将同样的模式运用到了服务调用者上.</p>
+<p>在一个高度服务化的系统中,我们实现的一个业务逻辑通常会依赖多个服务,比如:<br>商品详情展示服务会依赖商品服务, 价格服务, 商品评论服务. 如图所示:</p>
+<p><img src= "/MyBlog/img/loading.gif" data-src="https://segmentfault.com/img/bVzh9U" alt="图片描述"></p>
+<p>调用三个依赖服务会共享商品详情服务的线程池. 如果其中的商品评论服务不可用, 就会出现线程池里所有线程都因等待响应而被阻塞, 从而造成服务雪崩. 如图所示:</p>
+<p><img src= "/MyBlog/img/loading.gif" data-src="https://segmentfault.com/img/bVzh9S" alt="图片描述"></p>
+<p>Hystrix通过将每个依赖服务分配独立的线程池进行资源隔离, 从而避免服务雪崩.<br>如下图所示, 当商品评论服务不可用时, 即使商品服务独立分配的20个线程全部处于同步等待状态,也不会影响其他依赖服务的调用.</p>
+<p><img src= "/MyBlog/img/loading.gif" data-src="https://segmentfault.com/img/bVziah" alt="图片描述"></p>
+<h4 id="熔断器模式"><a href="#熔断器模式" class="headerlink" title="熔断器模式"></a>熔断器模式</h4><p>熔断器模式定义了熔断器开关相互转换的逻辑:</p>
+<p><img src= "/MyBlog/img/loading.gif" data-src="https://segmentfault.com/img/bVziaa" alt="图片描述"></p>
+<p>服务的健康状况 = 请求失败数 / 请求总数.<br>熔断器开关由关闭到打开的状态转换是通过当前服务健康状况和设定阈值比较决定的.</p>
+<ol>
+<li>当熔断器开关关闭时, 请求被允许通过熔断器. 如果当前健康状况高于设定阈值, 开关继续保持关闭. 如果当前健康状况低于设定阈值, 开关则切换为打开状态.</li>
+<li>当熔断器开关打开时, 请求被禁止通过.</li>
+<li>当熔断器开关处于打开状态, 经过一段时间后, 熔断器会自动进入半开状态, 这时熔断器只允许一个请求通过. 当该请求调用成功时, 熔断器恢复到关闭状态. 若该请求失败, 熔断器继续保持打开状态, 接下来的请求被禁止通过.</li>
+</ol>
+<p>熔断器的开关能保证服务调用者在调用异常服务时, 快速返回结果, 避免大量的同步等待. 并且熔断器能在一段时间后继续侦测请求执行结果, 提供恢复服务调用的可能.</p>
+<h4 id="命令模式"><a href="#命令模式" class="headerlink" title="命令模式"></a>命令模式</h4><p>Hystrix使用命令模式(继承HystrixCommand类)来包裹具体的服务调用逻辑(run方法), 并在命令模式中添加了服务调用失败后的降级逻辑(getFallback).<br>同时我们在Command的构造方法中可以定义当前服务线程池和熔断器的相关参数. 如下代码所示:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Service1HystrixCommand</span> <span class="keyword">extends</span> <span class="title">HystrixCommand</span>&lt;<span class="title">Response</span>&gt; </span>&#123;</span><br><span class="line">  <span class="keyword">private</span> Service1 service;</span><br><span class="line">  <span class="keyword">private</span> Request request;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">Service1HystrixCommand</span><span class="params">(Service1 service, Request request)</span></span>&#123;</span><br><span class="line">    supper(</span><br><span class="line">      Setter.withGroupKey(HystrixCommandGroupKey.Factory.asKey(<span class="string">&quot;ServiceGroup&quot;</span>))</span><br><span class="line">          .andCommandKey(HystrixCommandKey.Factory.asKey(<span class="string">&quot;servcie1query&quot;</span>))</span><br><span class="line">          .andThreadPoolKey(HystrixThreadPoolKey.Factory.asKey(<span class="string">&quot;service1ThreadPool&quot;</span>))</span><br><span class="line">          .andThreadPoolPropertiesDefaults(HystrixThreadPoolProperties.Setter()</span><br><span class="line">            .withCoreSize(<span class="number">20</span>))<span class="comment">//服务线程池数量</span></span><br><span class="line">          .andCommandPropertiesDefaults(HystrixCommandProperties.Setter()</span><br><span class="line">            .withCircuitBreakerErrorThresholdPercentage(<span class="number">60</span>)<span class="comment">//熔断器关闭到打开阈值</span></span><br><span class="line">            .withCircuitBreakerSleepWindowInMilliseconds(<span class="number">3000</span>)<span class="comment">//熔断器打开到关闭的时间窗长度</span></span><br><span class="line">      ))</span><br><span class="line">      <span class="keyword">this</span>.service = service;</span><br><span class="line">      <span class="keyword">this</span>.request = request;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">protected</span> Response <span class="title">run</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> service1.call(request);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">protected</span> Response <span class="title">getFallback</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Response.dummy();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在使用了Command模式构建了服务对象之后, 服务便拥有了熔断器和线程池的功能.</p>
+<p><img src= "/MyBlog/img/loading.gif" data-src="https://segmentfault.com/img/bVzh96" alt="图片描述"></p>
+<h4 id="Hystrix的内部处理逻辑"><a href="#Hystrix的内部处理逻辑" class="headerlink" title="Hystrix的内部处理逻辑"></a>Hystrix的内部处理逻辑</h4><p>下图为Hystrix服务调用的内部逻辑:</p>
+<p><img src= "/MyBlog/img/loading.gif" data-src="https://segmentfault.com/img/bVziap" alt="图片描述"></p>
+<ol>
+<li>构建Hystrix的Command对象, 调用执行方法.</li>
+<li>Hystrix检查当前服务的熔断器开关是否开启, 若开启, 则执行降级服务getFallback方法.</li>
+<li>若熔断器开关关闭, 则Hystrix检查当前服务的线程池是否能接收新的请求, 若超过线程池已满, 则执行降级服务getFallback方法.</li>
+<li>若线程池接受请求, 则Hystrix开始执行服务调用具体逻辑run方法.</li>
+<li>若服务执行失败, 则执行降级服务getFallback方法, 并将执行结果上报Metrics更新服务健康状况.</li>
+<li>若服务执行超时, 则执行降级服务getFallback方法, 并将执行结果上报Metrics更新服务健康状况.</li>
+<li>若服务执行成功, 返回正常结果.</li>
+<li>若服务降级方法getFallback执行成功, 则返回降级结果.</li>
+<li>若服务降级方法getFallback执行失败, 则抛出异常.</li>
+</ol>
+<h2 id="Hystrix-Metrics的实现"><a href="#Hystrix-Metrics的实现" class="headerlink" title="Hystrix Metrics的实现"></a>Hystrix Metrics的实现</h2><p>Hystrix的Metrics中保存了当前服务的健康状况, 包括服务调用总次数和服务调用失败次数等. 根据Metrics的计数, 熔断器从而能计算出当前服务的调用失败率, 用来和设定的阈值比较从而决定熔断器的状态切换逻辑. 因此Metrics的实现非常重要.</p>
+<h4 id="1-4之前的滑动窗口实现"><a href="#1-4之前的滑动窗口实现" class="headerlink" title="1.4之前的滑动窗口实现"></a>1.4之前的滑动窗口实现</h4><p>Hystrix在这些版本中的使用自己定义的滑动窗口数据结构来记录当前时间窗的各种事件(成功,失败,超时,线程池拒绝等)的计数.<br>事件产生时, 数据结构根据当前时间确定使用旧桶还是创建新桶来计数, 并在桶中对计数器经行修改.<br>这些修改是多线程并发执行的, 代码中有不少加锁操作,逻辑较为复杂.</p>
+<p><img src= "/MyBlog/img/loading.gif" data-src="https://segmentfault.com/img/bVzh9Y" alt="图片描述"></p>
+<h4 id="1-5之后的滑动窗口实现"><a href="#1-5之后的滑动窗口实现" class="headerlink" title="1.5之后的滑动窗口实现"></a>1.5之后的滑动窗口实现</h4><p>Hystrix在这些版本中开始使用RxJava的Observable.window()实现滑动窗口.<br>RxJava的window使用后台线程创建新桶, 避免了并发创建桶的问题.<br>同时RxJava的单线程无锁特性也保证了计数变更时的线程安全. 从而使代码更加简洁.<br>以下为我使用RxJava的window方法实现的一个简易滑动窗口Metrics, 短短几行代码便能完成统计功能,足以证明RxJava的强大:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">timeWindowTest</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">  Observable&lt;Integer&gt; source = Observable.interval(<span class="number">50</span>, TimeUnit.MILLISECONDS).map(i -&gt; RandomUtils.nextInt(<span class="number">2</span>));</span><br><span class="line">  source.window(<span class="number">1</span>, TimeUnit.SECONDS).subscribe(window -&gt; &#123;</span><br><span class="line">    <span class="keyword">int</span>[] metrics = <span class="keyword">new</span> <span class="keyword">int</span>[<span class="number">2</span>];</span><br><span class="line">    window.subscribe(i -&gt; metrics[i]++,</span><br><span class="line">      InternalObservableUtils.ERROR_NOT_IMPLEMENTED,</span><br><span class="line">      () -&gt; System.out.println(<span class="string">&quot;窗口Metrics:&quot;</span> + JSON.toJSONString(metrics)));</span><br><span class="line">  &#125;);</span><br><span class="line">  TimeUnit.SECONDS.sleep(<span class="number">3</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>通过使用Hystrix,我们能方便的防止雪崩效应, 同时使系统具有自动降级和自动恢复服务的效果.</p>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">wangPei</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://princeling66.github.io/MyBlog/2021/06/04/Hystrix%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BD%BF%E7%94%A8/">https://princeling66.github.io/MyBlog/2021/06/04/Hystrix%E7%9A%84%E5%8E%9F%E7%90%86%E4%B8%8E%E4%BD%BF%E7%94%A8/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://Princeling66.github.io/MyBlog" target="_blank">Princeling66'Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/MyBlog/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/">微服务</a></div><div class="post_share"><div class="social-share" data-image="/MyBlog/photo/Hystrix.jpeg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"/><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/MyBlog/2021/03/27/%E5%A4%A7%E5%8E%82%E9%9D%A2%E8%AF%95%E5%BF%85%E5%A4%87%E4%B9%8B%E6%B6%88%E6%81%AF%E9%98%9F%E5%88%97%E8%BF%9E%E7%8E%AF%E9%97%AE%E3%80%90%E8%BD%AC%E8%BD%BD%E3%80%91/"><img class="next-cover" data-src="/MyBlog/photo/mq.png" onerror="onerror=null;src='/MyBlog/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">大厂面试必备之消息队列连环问【转载】</div></div></a></div></nav></article></main><footer id="footer" data-type="color"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By wangPei</div><div class="framework-info"><span>驱动 </span><a target="_blank" rel="noopener" href="https://hexo.io"><span>Hexo</span></a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly"><span>Butterfly</span></a></div><div class="footer_custom_text">Hi, welcome to my <a href="https://princeling66.github.io/MyBlog/">blog</a>!</div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><button id="readmode" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font_plus" title="放大字体"><i class="fas fa-plus"></i></button><button id="font_minus" title="缩小字体"><i class="fas fa-minus"></i></button><button class="translate_chn_to_cht" id="translateLink" title="简繁转换">简</button><button id="darkmode" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" title="设置"><i class="fas fa-cog"></i></button><button class="close" id="mobile-toc-button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/MyBlog/js/utils.js"></script><script src="/MyBlog/js/main.js"></script><script src="/MyBlog/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js" async></script></body></html>
