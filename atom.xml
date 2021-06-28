@@ -6,7 +6,7 @@
   <link href="https://princeling66.github.io/MyBlog/atom.xml" rel="self"/>
   
   <link href="https://princeling66.github.io/MyBlog/"/>
-  <updated>2021-06-17T02:05:29.122Z</updated>
+  <updated>2021-06-28T07:56:38.199Z</updated>
   <id>https://princeling66.github.io/MyBlog/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>VALIDATOR参数验证</title>
+    <link href="https://princeling66.github.io/MyBlog/2021/06/28/VALIDATOR%E5%8F%82%E6%95%B0%E9%AA%8C%E8%AF%81/"/>
+    <id>https://princeling66.github.io/MyBlog/2021/06/28/VALIDATOR%E5%8F%82%E6%95%B0%E9%AA%8C%E8%AF%81/</id>
+    <published>2021-06-28T10:00:16.000Z</published>
+    <updated>2021-06-28T07:56:38.199Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="VALIDATOR参数验证"><a href="#VALIDATOR参数验证" class="headerlink" title="VALIDATOR参数验证"></a>VALIDATOR参数验证</h2><ol><li><p>注解方法开启验证<img src= "/MyBlog/img/loading.gif" data-src="https://img-blog.csdnimg.cn/20210628154258408.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDY5OTM0OA==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p></li><li><p>是否复杂对象，对属性开启验证<img src= "/MyBlog/img/loading.gif" data-src="https://img-blog.csdnimg.cn/20210628154316432.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDY5OTM0OA==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p></li><li><p>属性注解描述<img src= "/MyBlog/img/loading.gif" data-src="https://img-blog.csdnimg.cn/2021062815434743.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDY5OTM0OA==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p></li></ol><p><strong>默认注解包含</strong><br><img src= "/MyBlog/img/loading.gif" data-src="https://img-blog.csdnimg.cn/20210628154405622.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDY5OTM0OA==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p><p><img src= "/MyBlog/img/loading.gif" data-src="https://img-blog.csdnimg.cn/2021062815462679.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDY5OTM0OA==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p><ol start="4"><li>不满足验证时，可自定义注解<img src= "/MyBlog/img/loading.gif" data-src="https://img-blog.csdnimg.cn/20210628154708584.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDY5OTM0OA==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></li></ol><p><strong>注解功能实现</strong><br><img src= "/MyBlog/img/loading.gif" data-src="https://img-blog.csdnimg.cn/202106281547298.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDY5OTM0OA==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"><br><strong>使用注解</strong><img src= "/MyBlog/img/loading.gif" data-src="https://img-blog.csdnimg.cn/20210628154749554.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl80NDY5OTM0OA==,size_16,color_FFFFFF,t_70#pic_center" alt="在这里插入图片描述"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h2 id=&quot;VALIDATOR参数验证&quot;&gt;&lt;a href=&quot;#VALIDATOR参数验证&quot; class=&quot;headerlink&quot; title=&quot;VALIDATOR参数验证&quot;&gt;&lt;/a&gt;VALIDATOR参数验证&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;注解方法开启验证&lt;img src=</summary>
+      
+    
+    
+    
+    <category term="注解" scheme="https://princeling66.github.io/MyBlog/categories/%E6%B3%A8%E8%A7%A3/"/>
+    
+    
+    <category term="注解" scheme="https://princeling66.github.io/MyBlog/tags/%E6%B3%A8%E8%A7%A3/"/>
+    
+  </entry>
   
   <entry>
     <title>Hystrix 的原理与使用</title>
