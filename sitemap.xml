@@ -102,20 +102,6 @@
   </url>
   
   <url>
-    <loc>https://princeling66.github.io/MyBlog/tags/Mysql/</loc>
-    <lastmod>2021-08-03</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://princeling66.github.io/MyBlog/tags/SQL/</loc>
-    <lastmod>2021-08-03</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://princeling66.github.io/MyBlog/tags/Spring-Security/</loc>
     <lastmod>2021-08-03</lastmod>
     <changefreq>daily</changefreq>
@@ -131,6 +117,20 @@
   
   <url>
     <loc>https://princeling66.github.io/MyBlog/tags/%E6%B3%A8%E8%A7%A3/</loc>
+    <lastmod>2021-08-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://princeling66.github.io/MyBlog/tags/Mysql/</loc>
+    <lastmod>2021-08-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://princeling66.github.io/MyBlog/tags/SQL/</loc>
     <lastmod>2021-08-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -160,14 +160,14 @@
   </url>
   
   <url>
-    <loc>https://princeling66.github.io/MyBlog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
+    <loc>https://princeling66.github.io/MyBlog/categories/%E7%99%BB%E5%BD%95/</loc>
     <lastmod>2021-08-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
   </url>
   
   <url>
-    <loc>https://princeling66.github.io/MyBlog/categories/%E7%99%BB%E5%BD%95/</loc>
+    <loc>https://princeling66.github.io/MyBlog/categories/%E6%8E%88%E6%9D%83/</loc>
     <lastmod>2021-08-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -181,7 +181,7 @@
   </url>
   
   <url>
-    <loc>https://princeling66.github.io/MyBlog/categories/%E6%8E%88%E6%9D%83/</loc>
+    <loc>https://princeling66.github.io/MyBlog/categories/%E6%95%B0%E6%8D%AE%E5%BA%93/</loc>
     <lastmod>2021-08-03</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
