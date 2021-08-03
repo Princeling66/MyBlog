@@ -124,7 +124,7 @@ cover:
   position: both
   # When cover is not set, the default cover is displayed (當沒有設置cover時，默認的封面顯示)
   default_cover: 
-    - https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg
+    - /photo/JReble.jpeg
 
 # Replace Broken Images (替換無法顯示的圖片)
 error_img:
@@ -133,8 +133,8 @@ error_img:
 
 # A simple 404 page
 error_404:
-  enable: false
-  subtitle: 'Page Not Found'
+  enable: true
+  subtitle: '页面没有找到'
   background: https://i.loli.net/2020/05/19/aKOcLiyPl2JQdFD.png
 
 post_meta:
@@ -531,7 +531,7 @@ font:
 
 # Font settings for the site title and site subtitle
 # 左上角網站名字 主頁居中網站名字
-blog_title_font: 
+blog_title_font:
   font_link: https://fonts.googleapis.com/css?family=Titillium+Web&display=swap
   font-family: Titillium Web, 'PingFang SC', 'Hiragino Sans GB', Microsoft YaHei', sans-serif
 
@@ -542,7 +542,7 @@ hr_icon:
   icon-top:
 
 # the subtitle on homepage (主頁subtitle)
-subtitle: Princeling66'Blog
+subtitle: 
   enable: true
   # Typewriter Effect (打字效果)
   effect: true
@@ -561,8 +561,8 @@ subtitle: Princeling66'Blog
   # 開頭不允許轉義字元，如需要，請把整個句子用雙引號包住
   # 如果關閉打字效果，subtitle只會顯示sub的第一行文字
   sub:
-    - 猪猪&#44;你好呀
-    - Pig Pig hello ~
+    - 今日事&#44;今日畢
+    - Never put off till tomorrow what you can do today
 
 # Loading Animation (加載動畫)
 preloader: false
@@ -693,7 +693,7 @@ snackbar:
   bg_dark: '#121212' # The background color of Toast Notification in dark mode
 
 # Baidu Push (百度推送)
-baidu_push: false
+baidu_push: true
 
 # https://instant.page/
 # prefetch (預加載)
@@ -823,3 +823,13 @@ CDN:
   aplayer_css: https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.css
   aplayer_js: https://cdn.jsdelivr.net/npm/aplayer/dist/APlayer.min.js
   meting_js: https://cdn.jsdelivr.net/npm/meting@1.2.0/dist/Meting.min.js
+
+# Artitalk
+# see https://artitalk.js.org/
+artitalk:
+  appId: n2E1udvuQVSIQyjY6cUmvkm9-MdYXbMMI
+  appKey: Bz8xaXpRVITnYoBQXkEHuKkQ
+  option:  
+    lang: zh
+
+
