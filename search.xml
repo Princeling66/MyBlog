@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>springIOC和AOP学习笔记</title>
+      <link href="/MyBlog/2022/05/27/springIOC%E5%92%8CAOP%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+      <url>/MyBlog/2022/05/27/springIOC%E5%92%8CAOP%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</url>
+      
+        <content type="html"><![CDATA[<p>@<a href="springIOC%E5%92%8CAOP%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0">TOC</a></p><hr><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p><code>记录AOP IOC学习心得</code></p><hr><h1 id="一、IOC"><a href="#一、IOC" class="headerlink" title="一、IOC"></a>一、IOC</h1><p>控制反转，将创建bean和管理bean的依赖的工作交给容器处理，控制权从自己手中转移到容器中，是一种思想，依赖注入是实现这种思想的方式</p><h2 id="1-依赖注入（DI）"><a href="#1-依赖注入（DI）" class="headerlink" title="1.依赖注入（DI）"></a>1.依赖注入（DI）</h2><p>IOC的实现方式有依赖查找和依赖注入，一般使用依赖注入</p><h3 id="1-1-依赖注入的三种方式"><a href="#1-1-依赖注入的三种方式" class="headerlink" title="1.1 依赖注入的三种方式"></a>1.1 依赖注入的三种方式</h3><p>1.<strong>构造器注入</strong>：IOC会检查被注入对象的构造方法，取得它所依赖的对象列表，为其注入相应的对象。优点是构造完成就处于就绪状态可以马上使用，缺点是构造方法无法被继承，不能设置默认值，若依赖的对象列表很多，会导致构造对象的参数列表很长，对于非必需的依赖处理可能要引入多个构造方法，造成参数列表的变动，不方便维护。</p><p>2.<strong>setting注入</strong>：不能马上使用，能设置默认值，可以被继承。</p><p>3.<strong>接口注入</strong>：必须通过实现接口为bean注入对象，使用少，因为需要实现不必要的接口，侵入性强</p><h3 id="1-2-依赖注入的注解"><a href="#1-2-依赖注入的注解" class="headerlink" title="1.2 依赖注入的注解"></a>1.2 依赖注入的注解</h3><p><strong>@Autowired</strong>:自动按类型再根据id<br><strong>@Resource</strong>:根据id<br><strong>@value</strong>:注入基本数据类型和String</p><h2 id="2-bean的作用域"><a href="#2-bean的作用域" class="headerlink" title="2 bean的作用域"></a>2 bean的作用域</h2><p><strong>singleton</strong>单例：默认作用域，不管收到多少bean请求，在容器中只存在唯一一个bean实例<br><strong>prototype</strong>多例（原型）：每次请求都创建新的bean实例<br><strong>request</strong>:每次http请求都创建一个新bean的实例，放到request作用域中，请求结束后bean会失效并被垃圾回收器回收<br><strong>session</strong>:每个session中都有一个bean的实例，session过期后bean失效<br><strong>global-session</strong>：1.5废弃，全局共享</p><h3 id="2-1-通过注解创建bean"><a href="#2-1-通过注解创建bean" class="headerlink" title="2.1 通过注解创建bean"></a>2.1 通过注解创建bean</h3><p>@component 把当前类对象存入spring容器中<br>@Controller @Service @Repository都是语义更精确的衍生注解<br>@Baan:将第三方类变成组件但又没有源代码</p><h3 id="2-2-通过注解配置文件"><a href="#2-2-通过注解配置文件" class="headerlink" title="2.2 通过注解配置文件"></a>2.2 通过注解配置文件</h3><p><strong>@configuration</strong>:标识该类是配置类，value属性指定配置类的字节码<br><strong>@componentscan</strong>:指定spring容器初始化时要扫描的包,basePackages属性用于指定要扫描的包<br><strong>@import</strong>:用于导入其他配置类</p><h3 id="2-3-BeanFactory-FactoryBean-ApplicationContext"><a href="#2-3-BeanFactory-FactoryBean-ApplicationContext" class="headerlink" title="2.3  BeanFactory,FactoryBean,ApplicationContext"></a>2.3  BeanFactory,FactoryBean,ApplicationContext</h3><p><strong>BeanFactory</strong>:用来管理bean的实例化，定位，配置对象和建立对象的依赖关系，IOC容器的顶级接口，使用延迟加载方式，是多例的。</p><p><strong>FactoryBean</strong>：通过实现该接口可以自定义生产bean的逻辑。</p><p><strong>ApplicationContext</strong>：BeanFactory的子类，扩展了更多的功能，使用立即加载方式，是单例的，一般推荐使用。</p><h1 id="二、AOP"><a href="#二、AOP" class="headerlink" title="二、AOP"></a>二、AOP</h1><p>将代码中公共的部分抽离出来，使用动态代理实现公共的功能<br>权限认证，日志处理，缓存，事务，错误处理</p><h2 id="1-相关术语"><a href="#1-相关术语" class="headerlink" title="1.相关术语"></a>1.相关术语</h2><p><strong>aspect</strong>:切面<br><strong>advice</strong>:通知<br><strong>joinpoint</strong>:连接点<br><strong>pointcut</strong>:切入点，切入点一定是连接点，连接点不一定是切入点<br><strong>porxy</strong>:代理，实现接口使用动态代理，没实现接口使用cglib<br><strong>targer</strong>:代理的目标对象<br><strong>weaving</strong>:植入，把增强应用到目标对象，创建代理对象的过程</p><h2 id="2-相关注解"><a href="#2-相关注解" class="headerlink" title="2.相关注解"></a>2.相关注解</h2><p><strong>@aspec</strong>t:声明类是切面类<br><strong>@before</strong>：前置通知<br><strong>@after</strong>：后置通知<br><strong>@afterReturning</strong>：返回后通知<br><strong>@afterthrowing</strong>：异常通知<br><strong>@around</strong>:环绕通知</p><hr><h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>很重要！背下来！</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 学习笔记 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> spring </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>VALIDATOR参数验证</title>
       <link href="/MyBlog/2021/06/28/VALIDATOR%E5%8F%82%E6%95%B0%E9%AA%8C%E8%AF%81/"/>
       <url>/MyBlog/2021/06/28/VALIDATOR%E5%8F%82%E6%95%B0%E9%AA%8C%E8%AF%81/</url>
